@@ -6,27 +6,32 @@ function Grid() {
   const [grid, setGrid] = useState(board);
   const [isGameStarted, setIsGameStarted] = useState(false);
 
-  const clickSquareValueHandler = (row, col) => {
+  const updateGrid = () => {
     const gridCopy = [...grid];
-    gridCopy[row][col] = gridCopy[row][col] === "0" ? "1" : "0";
+    for (let row = 0; row < grid.length; row++) {
+      for (let col = 0; col < grid[0].length; col++) {
+        if (canSquareBeAlive(row, col, gridCopy)) {
+          gridCopy[row][col] = "1";
+        } else {
+          gridCopy[row][col] = "0";
+        }
+      }
+    }
     setGrid(gridCopy);
   };
 
-  const renderGrid = () => {
-    const gridToDisplay = [];
-    for (let row = 0; row < grid.length; row++) {
-      gridToDisplay.push([]);
-      for (let col = 0; col < grid[0].length; col++) {
-        gridToDisplay[row].push(
-          <GridSquare
-            key={`${col}${row}`}
-            color={`${grid[row][col]}`}
-            onClick={() => clickSquareValueHandler(row, col)}
-          />
-        );
-      }
+  const canSquareBeAlive = (squareRow, squareCol, inputGrid) => {
+    const squareValue = inputGrid[squareRow][squareCol];
+    const neighboursAmount = countSquareNeighbours(
+      squareRow,
+      squareCol,
+      inputGrid
+    );
+    if (squareValue === "1") {
+      return neighboursAmount === 2 || neighboursAmount === 3;
+    } else {
+      return neighboursAmount === 3;
     }
-    return gridToDisplay;
   };
 
   const countSquareNeighbours = (squareRow, squareCol, inputGrid) => {
@@ -53,32 +58,26 @@ function Grid() {
     return neighboursCount;
   };
 
-  const canSquareBeAlive = (squareRow, squareCol, inputGrid) => {
-    const squareValue = inputGrid[squareRow][squareCol];
-    const neighboursAmount = countSquareNeighbours(
-      squareRow,
-      squareCol,
-      inputGrid
-    );
-
-    if (squareValue === "1") {
-      return neighboursAmount === 2 || neighboursAmount === 3;
-    } else {
-      return neighboursAmount === 3;
-    }
-  };
-
-  const updateGrid = () => {
-    const gridCopy = [...grid];
+  const renderGrid = () => {
+    const gridToDisplay = [];
     for (let row = 0; row < grid.length; row++) {
+      gridToDisplay.push([]);
       for (let col = 0; col < grid[0].length; col++) {
-        if (canSquareBeAlive(row, col, gridCopy)) {
-          gridCopy[row][col] = "1";
-        } else {
-          gridCopy[row][col] = "0";
-        }
+        gridToDisplay[row].push(
+          <GridSquare
+            key={`${col}${row}`}
+            color={`${grid[row][col]}`}
+            onClick={() => clickSquareValueHandler(row, col)}
+          />
+        );
       }
     }
+    return gridToDisplay;
+  };
+
+  const clickSquareValueHandler = (row, col) => {
+    const gridCopy = [...grid];
+    gridCopy[row][col] = gridCopy[row][col] === "0" ? "1" : "0";
     setGrid(gridCopy);
   };
 
@@ -92,6 +91,7 @@ function Grid() {
       };
     }
   }, [isGameStarted]);
+
   return (
     <>
       <div className="grid-board">{renderGrid()}</div>
