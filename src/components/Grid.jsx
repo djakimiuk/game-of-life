@@ -4,11 +4,11 @@ import board from "../ExamInput";
 
 function Grid() {
   const [grid, setGrid] = useState(board);
+  const [isGameStarted, setIsGameStarted] = useState(false);
 
   const clickSquareValueHandler = (row, col) => {
     const gridCopy = [...grid];
     gridCopy[row][col] = gridCopy[row][col] === "0" ? "1" : "0";
-    console.log(gridCopy);
     setGrid(gridCopy);
   };
 
@@ -30,9 +30,6 @@ function Grid() {
   };
 
   const countSquareNeighbours = (squareRow, squareCol, inputGrid) => {
-    console.log(
-      `Coordinates from countSquareNeighbours: ${squareRow}, ${squareCol}`
-    );
     const vectors = [-1, 0, 1];
     let neighboursCount = 0;
     for (let i = 0; i < vectors.length; i++) {
@@ -50,24 +47,13 @@ function Grid() {
           inputGrid[row][col] === "1"
         ) {
           neighboursCount++;
-          console.log(
-            `LOG from neighboursCount: neighboursCount${neighboursCount}, position: [${row}, ${col}]`
-          );
         }
       }
     }
     return neighboursCount;
   };
 
-  console.log(
-    `result of count square neighbours`,
-    countSquareNeighbours(2, 1, grid)
-  );
-
   const canSquareBeAlive = (squareRow, squareCol, inputGrid) => {
-    console.log(
-      `Coordinates from canSquareBeAlive: ${squareRow}, ${squareCol}`
-    );
     const squareValue = inputGrid[squareRow][squareCol];
     const neighboursAmount = countSquareNeighbours(
       squareRow,
@@ -82,13 +68,10 @@ function Grid() {
     }
   };
 
-  console.log(`result of cansquarebealive ${canSquareBeAlive(2, 1, grid)}`);
-
   const updateGrid = () => {
     const gridCopy = [...grid];
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[0].length; col++) {
-        console.log(`Coordinates from updateGrid: ${row}, ${col}`);
         if (canSquareBeAlive(row, col, gridCopy)) {
           gridCopy[row][col] = "1";
         } else {
@@ -100,13 +83,22 @@ function Grid() {
   };
 
   useEffect(() => {
-    console.log(grid);
-  }, [grid]);
+    if (isGameStarted) {
+      const gameInterval = setInterval(() => {
+        updateGrid();
+      }, 500);
+      return () => {
+        clearInterval(gameInterval);
+      };
+    }
+  }, [isGameStarted]);
   return (
     <>
       <div className="grid-board">{renderGrid()}</div>
       <div>
-        <button onClick={() => updateGrid()}>START</button>
+        <button onClick={() => setIsGameStarted(!isGameStarted)}>
+          {isGameStarted ? "STOP" : "START"}
+        </button>
       </div>
     </>
   );
