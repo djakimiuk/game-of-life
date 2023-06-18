@@ -1,0 +1,59 @@
+* {
+  box-sizing: border-box;
+}
+:root {
+  --bg-color: rgba(150, 150, 150, 1);
+
+  --border-left-color: rgba(255, 255, 255, 0.2);
+  --border-top-color: rgba(255, 255, 255, 0.33);
+  --border-right-color: rgba(0, 0, 0, 0.15);
+  --border-bottom-color: rgba(0, 0, 0, 0.5);
+
+  --color-0: #eaeaea;
+  --color-X: #ff6600;
+  --color-1: #ff0000;
+  --color-Y: #0000ff;
+  --cols: 12;
+  --rows: 16;
+  --tile-size: 30px;
+  --border-width: 5px;
+}
+.color-0 {
+  background-color: var(--color-0);
+}
+
+.color-X {
+  background-color: var(--color-X);
+}
+
+.color-1 {
+  background-color: var(--color-1);
+}
+
+.color-Y {
+  background-color: var(--color-Y);
+}
+
+.grid-square {
+  border-style: solid;
+  width: var(--tile-size);
+  height: var(--tile-size);
+  border-width: var(--border-width);
+  border-left-color: var(--border-left-color);
+  border-top-color: var(--border-top-color);
+  border-right-color: var(--border-right-color);
+  border-bottom-color: var(--border-bottom-color);
+}
+
+.grid-board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--tile-size));
+  grid-gap: 0;
+  align-self: flex-start;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
